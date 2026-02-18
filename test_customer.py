@@ -45,7 +45,7 @@ class TestCustomer(unittest.TestCase):
             "C1", self.file_path
         )
         self.assertTrue(result)
-        customers = Customer._load_data(self.file_path)
+        customers = Customer.load_data(self.file_path)
         self.assertNotIn("C1", customers)
 
     def test_display_customer_info_success(self):
@@ -114,7 +114,7 @@ class TestCustomer(unittest.TestCase):
             "C2", "Maria", "maria@email.com",
             file_path=self.file_path
         )
-        customers = Customer._load_data(self.file_path)
+        customers = Customer.load_data(self.file_path)
         self.assertEqual(len(customers), 2)
 
     def test_persistence_after_modify(self):
@@ -127,7 +127,7 @@ class TestCustomer(unittest.TestCase):
             "C1", file_path=self.file_path,
             name="Carlos"
         )
-        customers = Customer._load_data(self.file_path)
+        customers = Customer.load_data(self.file_path)
         self.assertEqual(
             customers["C1"].name, "Carlos"
         )
@@ -247,12 +247,12 @@ class TestCustomer(unittest.TestCase):
             self.file_path, "w", encoding="utf-8"
         ) as fhandle:
             fhandle.write("{invalid json content")
-        customers = Customer._load_data(self.file_path)
+        customers = Customer.load_data(self.file_path)
         self.assertEqual(customers, {})
 
     def test_load_nonexistent_file(self):
         """Negative: load non-existent file."""
-        customers = Customer._load_data(
+        customers = Customer.load_data(
             "/tmp/nonexistent_customers.json"
         )
         self.assertEqual(customers, {})
@@ -275,7 +275,7 @@ class TestCustomer(unittest.TestCase):
             self.file_path, "w", encoding="utf-8"
         ) as fhandle:
             json.dump(data, fhandle)
-        customers = Customer._load_data(self.file_path)
+        customers = Customer.load_data(self.file_path)
         self.assertEqual(len(customers), 0)
 
     def test_create_customer_whitespace_id(self):

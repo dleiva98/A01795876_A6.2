@@ -6,6 +6,25 @@ from customer import Customer
 from hotel import Hotel
 
 
+def _validate_string(value, field_name):
+    """Validate that a value is a non-empty string.
+
+    Args:
+        value: Value to validate.
+        field_name: Name of the field for error message.
+
+    Returns:
+        True if valid, False otherwise.
+    """
+    if not isinstance(value, str) or not value.strip():
+        print(
+            f"Error: {field_name} must be "
+            "a non-empty string"
+        )
+        return False
+    return True
+
+
 class Reservation:
     """Reservation linking a customer to a hotel."""
 
@@ -57,7 +76,7 @@ class Reservation:
             return None
 
     @staticmethod
-    def _load_data(file_path=None):
+    def load_data(file_path=None):
         """Load reservations from JSON file.
 
         Args:
@@ -85,7 +104,7 @@ class Reservation:
             return {}
 
     @staticmethod
-    def _save_data(reservations, file_path=None):
+    def save_data(reservations, file_path=None):
         """Save reservations to JSON file.
 
         Args:
@@ -93,15 +112,16 @@ class Reservation:
             file_path: Optional custom file path.
         """
         path = file_path or Reservation.DATA_FILE
-        data = {k: r.to_dict() for k, r in reservations.items()}
+        data = {}
+        for key, res in reservations.items():
+            data[key] = res.to_dict()
         with open(path, "w", encoding="utf-8") as fh:
             json.dump(data, fh, indent=2)
 
     @classmethod
     def create_reservation(
         cls, reservation_id, customer_id, hotel_id,
-        file_path=None, hotel_file=None,
-        customer_file=None
+        **kwargs
     ):
         """Create a new reservation.
 
@@ -110,44 +130,30 @@ class Reservation:
 
         Args:
             reservation_id: Unique identifier.
-            customer_id: Customer making the reservation.
+            customer_id: Customer making reservation.
             hotel_id: Hotel being reserved.
-            file_path: Reservations data file path.
-            hotel_file: Hotels data file path.
-            customer_file: Customers data file path.
+            **kwargs: Optional file_path, hotel_file,
+                customer_file for custom data paths.
 
         Returns:
             Reservation instance or None on failure.
         """
-        if (
-            not isinstance(reservation_id, str)
-            or not reservation_id.strip()
+        file_path = kwargs.get("file_path")
+        hotel_file = kwargs.get("hotel_file")
+        customer_file = kwargs.get("customer_file")
+
+        if not _validate_string(
+            reservation_id, "reservation_id"
         ):
-            print(
-                "Error: reservation_id must be "
-                "a non-empty string"
-            )
             return None
-        if (
-            not isinstance(customer_id, str)
-            or not customer_id.strip()
+        if not _validate_string(
+            customer_id, "customer_id"
         ):
-            print(
-                "Error: customer_id must be "
-                "a non-empty string"
-            )
             return None
-        if (
-            not isinstance(hotel_id, str)
-            or not hotel_id.strip()
-        ):
-            print(
-                "Error: hotel_id must be "
-                "a non-empty string"
-            )
+        if not _validate_string(hotel_id, "hotel_id"):
             return None
 
-        customers = Customer._load_data(customer_file)
+        customers = Customer.load_data(customer_file)
         if customer_id not in customers:
             print(
                 f"Error: Customer '{customer_id}' "
@@ -155,14 +161,14 @@ class Reservation:
             )
             return None
 
-        hotels = Hotel._load_data(hotel_file)
+        hotels = Hotel.load_data(hotel_file)
         if hotel_id not in hotels:
             print(
                 f"Error: Hotel '{hotel_id}' not found"
             )
             return None
 
-        reservations = cls._load_data(file_path)
+        reservations = cls.load_data(file_path)
         if reservation_id in reservations:
             print(
                 f"Error: Reservation "
@@ -177,7 +183,7 @@ class Reservation:
             reservation_id, customer_id, hotel_id
         )
         reservations[reservation_id] = reservation
-        cls._save_data(reservations, file_path)
+        cls.save_data(reservations, file_path)
         return reservation
 
     @classmethod
@@ -197,7 +203,7 @@ class Reservation:
         Returns:
             True if cancelled, False otherwise.
         """
-        reservations = cls._load_data(file_path)
+        reservations = cls.load_data(file_path)
         if reservation_id not in reservations:
             print(
                 f"Error: Reservation "
@@ -209,5 +215,5 @@ class Reservation:
             reservation.hotel_id, hotel_file
         )
         del reservations[reservation_id]
-        cls._save_data(reservations, file_path)
+        cls.save_data(reservations, file_path)
         return True

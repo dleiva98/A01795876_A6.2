@@ -47,7 +47,7 @@ class TestHotel(unittest.TestCase):
             "H1", self.file_path
         )
         self.assertTrue(result)
-        hotels = Hotel._load_data(self.file_path)
+        hotels = Hotel.load_data(self.file_path)
         self.assertNotIn("H1", hotels)
 
     def test_display_hotel_info_success(self):
@@ -175,7 +175,7 @@ class TestHotel(unittest.TestCase):
             "H2", "Hotel B", "City B", 20,
             file_path=self.file_path
         )
-        hotels = Hotel._load_data(self.file_path)
+        hotels = Hotel.load_data(self.file_path)
         self.assertEqual(len(hotels), 2)
 
     def test_persistence_after_operations(self):
@@ -188,7 +188,7 @@ class TestHotel(unittest.TestCase):
             "H1", file_path=self.file_path,
             name="Hotel B"
         )
-        hotels = Hotel._load_data(self.file_path)
+        hotels = Hotel.load_data(self.file_path)
         self.assertEqual(hotels["H1"].name, "Hotel B")
 
     # --- Negative test cases ---
@@ -346,12 +346,12 @@ class TestHotel(unittest.TestCase):
             self.file_path, "w", encoding="utf-8"
         ) as fhandle:
             fhandle.write("not valid json{{{")
-        hotels = Hotel._load_data(self.file_path)
+        hotels = Hotel.load_data(self.file_path)
         self.assertEqual(hotels, {})
 
     def test_load_nonexistent_file(self):
         """Negative: load from non-existent file."""
-        hotels = Hotel._load_data(
+        hotels = Hotel.load_data(
             "/tmp/nonexistent_file.json"
         )
         self.assertEqual(hotels, {})
@@ -374,7 +374,7 @@ class TestHotel(unittest.TestCase):
             self.file_path, "w", encoding="utf-8"
         ) as fhandle:
             json.dump(data, fhandle)
-        hotels = Hotel._load_data(self.file_path)
+        hotels = Hotel.load_data(self.file_path)
         self.assertEqual(len(hotels), 0)
 
     def test_create_hotel_whitespace_id(self):

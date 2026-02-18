@@ -59,7 +59,7 @@ class Hotel:
             return None
 
     @staticmethod
-    def _load_data(file_path=None):
+    def load_data(file_path=None):
         """Load hotels from JSON file.
 
         Args:
@@ -85,7 +85,7 @@ class Hotel:
             return {}
 
     @staticmethod
-    def _save_data(hotels, file_path=None):
+    def save_data(hotels, file_path=None):
         """Save hotels to JSON file.
 
         Args:
@@ -125,13 +125,13 @@ class Hotel:
                 "Error: total_rooms must be a positive integer"
             )
             return None
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id in hotels:
             print(f"Error: Hotel '{hotel_id}' already exists")
             return None
         hotel = cls(hotel_id, name, location, total_rooms)
         hotels[hotel_id] = hotel
-        cls._save_data(hotels, file_path)
+        cls.save_data(hotels, file_path)
         return hotel
 
     @classmethod
@@ -145,12 +145,12 @@ class Hotel:
         Returns:
             True if deleted, False otherwise.
         """
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id not in hotels:
             print(f"Error: Hotel '{hotel_id}' not found")
             return False
         del hotels[hotel_id]
-        cls._save_data(hotels, file_path)
+        cls.save_data(hotels, file_path)
         return True
 
     @classmethod
@@ -164,7 +164,7 @@ class Hotel:
         Returns:
             Hotel instance or None if not found.
         """
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id not in hotels:
             print(f"Error: Hotel '{hotel_id}' not found")
             return None
@@ -190,7 +190,7 @@ class Hotel:
         Returns:
             Updated Hotel instance or None if not found.
         """
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id not in hotels:
             print(f"Error: Hotel '{hotel_id}' not found")
             return None
@@ -201,7 +201,7 @@ class Hotel:
                 setattr(hotel, key, value)
             else:
                 print(f"Warning: '{key}' is not modifiable")
-        cls._save_data(hotels, file_path)
+        cls.save_data(hotels, file_path)
         return hotel
 
     @classmethod
@@ -215,7 +215,7 @@ class Hotel:
         Returns:
             True if reserved, False otherwise.
         """
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id not in hotels:
             print(f"Error: Hotel '{hotel_id}' not found")
             return False
@@ -224,7 +224,7 @@ class Hotel:
             print("Error: No rooms available")
             return False
         hotel.rooms_available -= 1
-        cls._save_data(hotels, file_path)
+        cls.save_data(hotels, file_path)
         return True
 
     @classmethod
@@ -240,7 +240,7 @@ class Hotel:
         Returns:
             True if cancelled, False otherwise.
         """
-        hotels = cls._load_data(file_path)
+        hotels = cls.load_data(file_path)
         if hotel_id not in hotels:
             print(f"Error: Hotel '{hotel_id}' not found")
             return False
@@ -249,5 +249,5 @@ class Hotel:
             print("Error: No reservations to cancel")
             return False
         hotel.rooms_available += 1
-        cls._save_data(hotels, file_path)
+        cls.save_data(hotels, file_path)
         return True

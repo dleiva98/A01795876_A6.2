@@ -140,7 +140,7 @@ class TestReservation(unittest.TestCase):
             hotel_file=self.hotel_file,
             customer_file=self.cust_file
         )
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             self.res_file
         )
         self.assertEqual(len(reservations), 2)
@@ -153,7 +153,7 @@ class TestReservation(unittest.TestCase):
             hotel_file=self.hotel_file,
             customer_file=self.cust_file
         )
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             self.res_file
         )
         self.assertIn("R1", reservations)
@@ -174,7 +174,7 @@ class TestReservation(unittest.TestCase):
             file_path=self.res_file,
             hotel_file=self.hotel_file
         )
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             self.res_file
         )
         self.assertNotIn("R1", reservations)
@@ -292,14 +292,14 @@ class TestReservation(unittest.TestCase):
             self.res_file, "w", encoding="utf-8"
         ) as fhandle:
             fhandle.write("corrupted{{{json")
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             self.res_file
         )
         self.assertEqual(reservations, {})
 
     def test_load_nonexistent_file(self):
         """Negative: load non-existent file."""
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             "/tmp/nonexistent_res.json"
         )
         self.assertEqual(reservations, {})
@@ -322,7 +322,7 @@ class TestReservation(unittest.TestCase):
             self.res_file, "w", encoding="utf-8"
         ) as fhandle:
             json.dump(data, fhandle)
-        reservations = Reservation._load_data(
+        reservations = Reservation.load_data(
             self.res_file
         )
         self.assertEqual(len(reservations), 0)

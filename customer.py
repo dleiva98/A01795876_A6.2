@@ -51,7 +51,7 @@ class Customer:
             return None
 
     @staticmethod
-    def _load_data(file_path=None):
+    def load_data(file_path=None):
         """Load customers from JSON file.
 
         Args:
@@ -77,7 +77,7 @@ class Customer:
             return {}
 
     @staticmethod
-    def _save_data(customers, file_path=None):
+    def save_data(customers, file_path=None):
         """Save customers to JSON file.
 
         Args:
@@ -121,7 +121,7 @@ class Customer:
                 "Error: email must be a non-empty string"
             )
             return None
-        customers = cls._load_data(file_path)
+        customers = cls.load_data(file_path)
         if customer_id in customers:
             print(
                 f"Error: Customer '{customer_id}' "
@@ -130,7 +130,7 @@ class Customer:
             return None
         customer = cls(customer_id, name, email)
         customers[customer_id] = customer
-        cls._save_data(customers, file_path)
+        cls.save_data(customers, file_path)
         return customer
 
     @classmethod
@@ -144,14 +144,14 @@ class Customer:
         Returns:
             True if deleted, False otherwise.
         """
-        customers = cls._load_data(file_path)
+        customers = cls.load_data(file_path)
         if customer_id not in customers:
             print(
                 f"Error: Customer '{customer_id}' not found"
             )
             return False
         del customers[customer_id]
-        cls._save_data(customers, file_path)
+        cls.save_data(customers, file_path)
         return True
 
     @classmethod
@@ -167,7 +167,7 @@ class Customer:
         Returns:
             Customer instance or None if not found.
         """
-        customers = cls._load_data(file_path)
+        customers = cls.load_data(file_path)
         if customer_id not in customers:
             print(
                 f"Error: Customer '{customer_id}' not found"
@@ -193,7 +193,7 @@ class Customer:
         Returns:
             Updated Customer or None if not found.
         """
-        customers = cls._load_data(file_path)
+        customers = cls.load_data(file_path)
         if customer_id not in customers:
             print(
                 f"Error: Customer '{customer_id}' not found"
@@ -208,5 +208,5 @@ class Customer:
                 print(
                     f"Warning: '{key}' is not modifiable"
                 )
-        cls._save_data(customers, file_path)
+        cls.save_data(customers, file_path)
         return cust
